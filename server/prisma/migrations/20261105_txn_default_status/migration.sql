@@ -1,0 +1,2 @@
+ALTER TABLE "txn"
+ALTER COLUMN "status" SET DEFAULT 'Issued';

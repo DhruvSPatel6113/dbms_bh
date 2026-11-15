@@ -1,0 +1,12 @@
+CREATE OR REPLACE FUNCTION fn_book_guard() RETURNS trigger AS $$
+BEGIN
+  IF NEW.total_copies < (OLD.total_copies - OLD.avl_copies) THEN
+    RAISE EXCEPTION 'TOTAL_BELOW_ON_LOAN' USING ERRCODE='P0001';
+  END IF;
+
+  IF (NEW.total_copies - NEW.avl_copies) < 0 THEN
+    RAISE EXCEPTION 'INVALID_COPY_COUNT' USING ERRCODE='P0001';
+  END IF;
+
+  RETURN NEW;
+END $$ LANGUAGE plpgsql;

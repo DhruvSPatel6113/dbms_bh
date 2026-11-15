@@ -1,0 +1,120 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Book {
+  bookId        Int      @id @default(autoincrement()) @map("book_id")
+  title         String
+  author        String
+  isbn          String   @unique
+  category      String
+  totalCopies   Int      @map("total_copies")
+  avlCopies     Int      @map("avl_copies")
+  publication   String
+  dateOfPublish DateTime @map("date_of_publish") @db.Date
+  cost          Decimal  @db.Decimal(10, 2)
+  txns          Txn[]
+
+  @@map("book")
+}
+
+model Member {
+  memberId           Int                 @id @default(autoincrement()) @map("member_id")
+  fullName           String              @map("full_name")
+  email              String              @unique
+  phone              String
+  joinDate           DateTime            @map("join_date") @db.Date
+  renewDate          DateTime            @map("renew_date") @db.Date
+  membershipType     String              @map("type_of_membership")
+  status             String
+  txns               Txn[]
+  fines              Fine[]
+  membershipPayments MembershipPayment[]
+
+  @@map("member")
+}
+
+model Txn {
+  txnId      Int       @id @default(autoincrement()) @map("txn_id")
+  bookId     Int       @map("book_id")
+  memberId   Int       @map("member_id")
+  issueDate  DateTime  @map("issue_date") @db.Date
+  dueDate    DateTime? @map("due_date") @db.Date
+  returnDate DateTime? @map("return_date") @db.Date
+  status     String    @default("Issued")
+  book       Book      @relation(fields: [bookId], references: [bookId])
+  member     Member    @relation(fields: [memberId], references: [memberId])
+  fine       Fine?
+
+  @@map("txn")
+}
+
+model Fine {
+  fineId     Int       @id @default(autoincrement()) @map("fine_id")
+  txnId      Int       @unique @map("txn_id")
+  memberId   Int       @map("member_id")
+  fineAmount Decimal   @map("fine_amount") @db.Decimal(10, 2)
+  paidStatus String    @map("paid_status")
+  reason     String
+  paidDate   DateTime? @map("paid_date") @db.Date
+  txn        Txn       @relation(fields: [txnId], references: [txnId])
+  member     Member    @relation(fields: [memberId], references: [memberId])
+
+  @@map("fine")
+}
+
+model MembershipPayment {
+  paymentId   Int      @id @default(autoincrement()) @map("payment_id")
+  memberId    Int      @map("member_id")
+  amount      Decimal  @db.Decimal(10, 2)
+  paymentType String   @map("payment_type")
+  paidAt      DateTime @default(now()) @map("paid_at") @db.Date
+  member      Member   @relation(fields: [memberId], references: [memberId])
+
+  @@map("membership_payment")
+}
+
+model Staff {
+  staffId       Int      @id @default(autoincrement()) @map("staff_id")
+  staffName     String   @map("staff_name")
+  email         String   @unique
+  phoneNo       String   @map("phone_no")
+  address       String
+  shift         String
+  dateOfJoining DateTime @map("date_of_joining") @db.Date
+  qualification String
+  designation   String
+  password      String?
+
+  @@map("staff")
+}
+
+model Dealer {
+  dealerId      Int        @id @default(autoincrement()) @map("dealer_id")
+  companyName   String     @map("company_name")
+  contactPerson String     @map("contact_person")
+  contactNum    String     @map("contact_num")
+  email         String
+  address       String
+  software      Software[]
+
+  @@map("dealer")
+}
+
+model Software {
+  softwareId   Int      @id @default(autoincrement()) @map("software_id")
+  softwareName String   @map("software_name")
+  version      String
+  licenseType  String   @map("license_type")
+  totalLicense Int      @map("total_license")
+  dealerId     Int      @map("dealer_id")
+  expiryDate   DateTime @map("expiry_date") @db.Date
+  dealer       Dealer   @relation(fields: [dealerId], references: [dealerId])
+
+  @@map("software")
+}
