@@ -6,8 +6,9 @@ The `.github/` directory encapsulates all GitHub-native configurations, reposito
 ## 2. Directory Contents & Structure
 ```
 .github/
-|-- readme.md               # Scope and contents overview
 |-- implementation.md       # CI pipeline and automation specification
+|-- docs/
+|   `-- readme.md           # Scope and contents overview
 `-- workflows/
     |-- ci.yml              # GitHub Actions Continuous Integration pipeline
     |-- readme.md           # Workflows directory readme

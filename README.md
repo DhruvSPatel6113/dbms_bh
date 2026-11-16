@@ -198,7 +198,9 @@ Every folder in this repository maintains a dedicated `readme.md` (purpose, scop
 |-- .env.example                            <-- Template environment variables
 |-- .gitignore                              <-- Local storage & privacy protection
 |-- .github/
-|   |-- readme.md & implementation.md
+|   |-- implementation.md                  <-- CI pipeline and automation specification
+|   |-- docs/
+|   |   `-- readme.md                       <-- GitHub infrastructure directory overview
 |   `-- workflows/
 |       |-- ci.yml                          <-- GitHub Actions automated CI workflow
 |       |-- readme.md & implementation.md
